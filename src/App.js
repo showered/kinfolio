@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
@@ -27,7 +27,6 @@ const savedAccounts = window.localStorage.getItem('accounts');
 const App = () => {
   const [accounts, setAccounts] = useState(savedAccounts ? JSON.parse(savedAccounts) : []);
   const [accountDialogOpen, setAccountDialogOpen] = useState(false);
-  const [totalBalance, setTotalBalance] = useState(0);
   const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
@@ -39,14 +38,15 @@ const App = () => {
   }, [accounts]);
 
   const refreshBalances = async () => {
-    let newTotalBalance = 0;
     const newAccounts = [...accounts];
     for (const account of newAccounts) {
-      account.balance = await client.getAccountBalance(account.publicAddress);
-      newTotalBalance += account.balance;
+      try {
+        account.balance = await client.getAccountBalance(account.publicAddress);
+      } catch (e) {
+       
+      }
     }
     setAccounts(newAccounts);
-    setTotalBalance(newTotalBalance);
   };
 
   const handleModifyAccount = (modifiedAccount) => {
@@ -61,6 +61,13 @@ const App = () => {
     setAccounts(accounts.filter(account => account.id !== deletedAccount.id));
     setTimeout(() => setRefresh(Math.random()), 0);
   }
+
+  const getTotalBalance = useCallback(() => {
+    let initialValue = 0;
+    return accounts.reduce((accumulator, { balance = 0 }) => (
+      accumulator + balance
+    ), initialValue);
+  }, [accounts]);
 
   const showAccounts = useMemo(() => (
     <List>
@@ -118,7 +125,7 @@ const App = () => {
             Total balance:
           </Typography>
           <Typography variant="h4" component="p">
-            {totalBalance.toLocaleString()}
+            {getTotalBalance().toLocaleString()}
           </Typography>
         </div>
         { showAccounts }
