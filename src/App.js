@@ -38,7 +38,7 @@ const getCurrencySymbol = (currency) => {
 }
 
 const savedExchangeRate = window.localStorage.getItem('exchangeRate');
-const savedLocalCurrency = window.localStorage.getItem('savedLocalCurrency');
+const savedLocalCurrency = window.localStorage.getItem('localCurrency');
 const savedAccounts = window.localStorage.getItem('accounts');
 
 const App = () => {
