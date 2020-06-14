@@ -1,5 +1,5 @@
 # Kinfolio
-See all your cryptocurrency wallets in one place
+See all your Kin wallets in one place.
 
 ## Live demo
 https://peerbet.io/kinfolio
