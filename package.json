@@ -1,6 +1,6 @@
 {
-  "name": "create-react-app",
-  "version": "4.0.0",
+  "name": "kinfolio",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "start": "react-scripts start",

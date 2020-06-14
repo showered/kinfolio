@@ -52,7 +52,7 @@ const AccountItem = ({ account, handleDelete, handleModify }) => {
           primary={label}
           secondary={
             <React.Fragment>
-              {balance.toLocaleString()}
+              {balance ? Math.floor(balance).toLocaleString() : null}
             </React.Fragment>
           }
         />

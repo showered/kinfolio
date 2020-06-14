@@ -15,6 +15,8 @@ import AccountDialog from './AccountDialog';
 
 const client = new KinClient(Environment.Production);
 
+const KIN_RATE_API = (currency) => `https://www.coinbase.com/api/v2/assets/prices/238e025c-6b39-57ca-91d2-4ee7912cb518?base=${currency}`;
+
 const guidGenerator = () => {
   var S4 = function() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
@@ -22,20 +24,49 @@ const guidGenerator = () => {
   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
 
+const getCurrencySymbol = (currency) => {
+  switch(currency) {
+    case 'USD':
+      return '$';
+    case 'GBP':
+      return '£';
+    case 'EUR':
+      return '€';
+    default:
+      return currency;
+  }
+}
+
+const savedExchangeRate = window.localStorage.getItem('exchangeRate');
+const savedLocalCurrency = window.localStorage.getItem('savedLocalCurrency');
 const savedAccounts = window.localStorage.getItem('accounts');
 
 const App = () => {
   const [accounts, setAccounts] = useState(savedAccounts ? JSON.parse(savedAccounts) : []);
   const [accountDialogOpen, setAccountDialogOpen] = useState(false);
+  const [exchangeRate, setExchangeRate] = useState(savedExchangeRate);
+  const [localCurrency, setLocalCurrency] = useState(savedLocalCurrency || 'USD');
   const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
-    refreshBalances()
+    getExchangeRate();
+  }, [localCurrency]);
+
+  useEffect(() => {
+    refreshBalances();
   }, [refresh]);
 
   useEffect(() => {
     window.localStorage.setItem('accounts', JSON.stringify(accounts));
   }, [accounts]);
+
+  useEffect(() => {
+    window.localStorage.setItem('exchangeRate', exchangeRate);
+  }, [exchangeRate]);
+
+  useEffect(() => {
+    window.localStorage.setItem('localCurrency', localCurrency);
+  }, [localCurrency]);
 
   const refreshBalances = async () => {
     const newAccounts = [...accounts];
@@ -48,6 +79,12 @@ const App = () => {
     }
     setAccounts(newAccounts);
   };
+
+  const getExchangeRate = async () => {
+    const rate = await fetch(KIN_RATE_API(localCurrency));
+    const rateJson = await rate.json()
+    setExchangeRate(rateJson?.data?.prices?.latest);
+  }
 
   const handleModifyAccount = (modifiedAccount) => {
     setAccounts(accounts.map((o) => {
@@ -121,11 +158,16 @@ const App = () => {
     <Container maxWidth="sm">
       <Box my={4}>
         <div style={headingStyles}>
-          <Typography variant="h5" component="h1" gutterBottom>
+          <Typography variant="p" component="p" gutterBottom>
             Total balance:
           </Typography>
-          <Typography variant="h4" component="p">
-            {getTotalBalance().toLocaleString()}
+          <Typography variant="h5" component="p">
+            {Math.floor(getTotalBalance()).toLocaleString()}
+            {' Kin'}
+          </Typography>
+          <Typography variant="h6" component="p" onClick={() => setLocalCurrency(localCurrency === 'USD' ? 'GBP' : 'USD')}>
+            {getCurrencySymbol(localCurrency)}
+            {parseFloat((getTotalBalance() * (exchangeRate || 0)).toFixed(2)).toLocaleString()}
           </Typography>
         </div>
         { showAccounts }
