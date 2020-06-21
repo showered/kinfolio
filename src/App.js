@@ -161,9 +161,9 @@ const App = () => {
           <Typography variant="p" component="p" gutterBottom>
             Total balance:
           </Typography>
-          <Typography variant="h5" component="p">
+          <Typography variant="h5" component="p" style={totalBalanceStyles}>
+            <img style={kinIconStyles} src={require('./assets/Kin_logo_RGB-purplecoin.png')} />
             {Math.floor(getTotalBalance()).toLocaleString()}
-            {' Kin'}
           </Typography>
           <Typography variant="h6" component="p" onClick={() => setLocalCurrency(localCurrency === 'USD' ? 'GBP' : 'USD')}>
             {getCurrencySymbol(localCurrency)}
@@ -191,5 +191,17 @@ const headingStyles = {
   flexDirection: 'column',
   alignItems: 'center',
 };
+
+const kinIconStyles = {
+  height: 32,
+  width: 32,
+  marginRight: 6,
+}
+
+const totalBalanceStyles = {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+}
 
 export default App;

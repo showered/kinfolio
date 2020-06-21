@@ -44,7 +44,7 @@ const AccountItem = ({ account, handleDelete, handleModify }) => {
     <React.Fragment>
       <ListItem onClick={handleEditClick}>
         <ListItemAvatar>
-          <Avatar>
+          <Avatar style={{ backgroundColor: 'rgb(111, 65, 232)', color: 'white' }}>
             {label.substr(0, 1).toUpperCase()}
           </Avatar>
         </ListItemAvatar>

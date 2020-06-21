@@ -44,7 +44,7 @@ const AccountDialog = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCloseAddAccount} color="primary">
+        <Button onClick={handleCloseAddAccount}>
           Cancel
         </Button>
         <Button
@@ -55,7 +55,6 @@ const AccountDialog = ({
               publicAddress: addAccountPublicAddress,
             });
           }}
-          color="primary"
         >
           {action}
         </Button>
