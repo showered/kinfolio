@@ -9,6 +9,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { Environment, KinClient } from '@kinecosystem/kin-sdk-node';
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import arrayMove from 'array-move';
 
 import AccountItem from './AccountItem';
 import AccountDialog from './AccountDialog';
@@ -106,31 +108,51 @@ const App = () => {
     ), initialValue);
   }, [accounts]);
 
-  const showAccounts = useMemo(() => (
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    const newAccounts = arrayMove(accounts, oldIndex, newIndex);
+    setAccounts(newAccounts);
+  };
+
+  const SortableItem = SortableElement(({ value }) => (
+    <React.Fragment key={`account-list-item-${value.id}`}>
+      <AccountItem
+        account={value}
+        handleDelete={handleDeleteAccount}
+        handleModify={handleModifyAccount}
+      />
+      <Divider variant="inset" component="li" />
+    </React.Fragment>
+  ));
+
+  const SortableList = SortableContainer(({ accounts }) => (
     <List>
-      {accounts.map((account, index) => {
-        return (
-          <React.Fragment key={`account-list-item-${account.id}`}>
-            <AccountItem
-              account={account}
-              handleDelete={handleDeleteAccount}
-              handleModify={handleModifyAccount}
-            />
-            <Divider variant="inset" component="li" />
-          </React.Fragment>
-        );
-      })}
-      <ListItem onClick={() => setAccountDialogOpen(true)} style={{ cursor: 'pointer' }}>
-        <ListItemAvatar>
-          <Avatar>
-            +
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={'Add account'}
-        />
-      </ListItem>
+      {
+        accounts
+          .map((value, index) => (
+            <SortableItem key={`item-${value.id}`} index={index} value={value} />
+          ))
+      }
     </List>
+  ));
+
+  const showAccounts = useMemo(() => (
+    <React.Fragment>
+      <List>
+        <SortableList accounts={accounts} onSortEnd={onSortEnd} useDragHandle />
+      </List>
+      <List>
+        <ListItem onClick={() => setAccountDialogOpen(true)} style={{ cursor: 'pointer' }}>
+          <ListItemAvatar>
+            <Avatar>
+              +
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={'Add account'}
+          />
+        </ListItem>
+      </List>
+    </React.Fragment>
   ), [accounts]);
 
   const handleCloseAddAccount = () => setAccountDialogOpen(false);
@@ -145,6 +167,7 @@ const App = () => {
         {
           currency: 'KIN',
           id: guidGenerator(),
+          index: prevAccounts.length,
           label,
           publicAddress,
         },
