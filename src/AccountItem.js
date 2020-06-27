@@ -13,7 +13,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import { SortableHandle } from 'react-sortable-hoc';
 
 import AccountDialog from './AccountDialog';
 
@@ -41,17 +40,13 @@ const AccountItem = ({ account, handleDelete, handleModify }) => {
   const handleCloseAddAccount = () => setAccountDialogOpen(false);
   const handleCloseDeleteConfirmation = () => setDeleteConfirmationDialogOpen(false);
 
-  const DragHandle = SortableHandle(() => (
-    <Avatar style={{ backgroundColor: 'rgb(111, 65, 232)', color: 'white' }}>
-      {label.substr(0, 1).toUpperCase()}
-    </Avatar>
-  ));
-
   return (
     <React.Fragment>
       <ListItem onClick={handleEditClick}>
         <ListItemAvatar>
-          <DragHandle />
+          <Avatar style={{ backgroundColor: 'rgb(111, 65, 232)', color: 'white' }}>
+            {label.substr(0, 1).toUpperCase()}
+          </Avatar>
         </ListItemAvatar>
         <ListItemText
           primary={label}

@@ -12,7 +12,6 @@
     "@kinecosystem/kin-sdk-node": "^0.9.4",
     "@material-ui/core": "latest",
     "@material-ui/icons": "^4.9.1",
-    "array-move": "^2.2.2",
     "clsx": "latest",
     "react": "latest",
     "react-dom": "latest",

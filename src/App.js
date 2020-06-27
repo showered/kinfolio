@@ -9,8 +9,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { Environment, KinClient } from '@kinecosystem/kin-sdk-node';
-import { SortableContainer, SortableElement } from 'react-sortable-hoc';
-import arrayMove from 'array-move';
+import { arrayMove, SortableContainer, SortableElement } from 'react-sortable-hoc';
 
 import AccountItem from './AccountItem';
 import AccountDialog from './AccountDialog';
@@ -138,7 +137,12 @@ const App = () => {
   const showAccounts = useMemo(() => (
     <React.Fragment>
       <List>
-        <SortableList accounts={accounts} onSortEnd={onSortEnd} useDragHandle />
+        <SortableList
+          accounts={accounts}
+          lockAxis="y"
+          onSortEnd={onSortEnd}
+          pressDelay={200}
+        />
       </List>
       <List>
         <ListItem onClick={() => setAccountDialogOpen(true)} style={{ cursor: 'pointer' }}>
