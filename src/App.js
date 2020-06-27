@@ -167,7 +167,12 @@ const App = () => {
           </Typography>
           <Typography variant="h6" component="p" onClick={() => setLocalCurrency(localCurrency === 'USD' ? 'GBP' : 'USD')}>
             {getCurrencySymbol(localCurrency)}
-            {parseFloat((getTotalBalance() * (exchangeRate || 0)).toFixed(2)).toLocaleString()}
+            {
+              (getTotalBalance() * (exchangeRate || 0)).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })
+            }
           </Typography>
         </div>
         { showAccounts }
